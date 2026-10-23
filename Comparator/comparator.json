@@ -1,0 +1,16 @@
+{
+    "challenge_module": "Challenge.Basic",
+    "solution_module": "Solution.Basic",
+    "theorem_names": [
+        "RiemannJensen.Challenge.exists_isDedekindZetaContinuation",
+        "RiemannJensen.Challenge.isDedekindZetaContinuation_unique",
+        "RiemannJensen.Challenge.dedekind_thm_main",
+        "RiemannJensen.Challenge.riemannJensen_main"
+    ],
+    "permitted_axioms": [
+        "propext",
+        "Quot.sound",
+        "Classical.choice"
+    ],
+    "enable_nanoda": true
+}

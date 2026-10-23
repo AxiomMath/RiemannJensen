@@ -1,0 +1,17 @@
+Riemann and Dedekind Jensen Polynomials in Lean 4
+Copyright 2026 Axiom Math
+
+This repository is made available under the Apache License, Version 2.0
+(see LICENSE).
+
+RiemannJensen/Dedekind/CompletedZetaPackageSource.lean and its small supporting
+elaborator utility contain a port of the completed Dedekind-zeta package proof
+from anthropics/fermats-last-theorem at commit
+6e837e75355538c7f80bab5b956861e86c4eacc2.
+Copyright 2026 Anthropic, PBC. That source is distributed under the Apache
+License, Version 2.0. Its upstream NOTICE and attribution records are available
+at https://github.com/anthropics/fermats-last-theorem/tree/6e837e75355538c7f80bab5b956861e86c4eacc2.
+
+Mathlib is Copyright (c) its respective authors and is distributed under the
+Apache License, Version 2.0. It is fetched as a pinned build dependency rather
+than redistributed here.

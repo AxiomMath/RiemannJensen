@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this paper or its Lean formalization, please cite this work."
+title: "The Riemann Hypothesis and the Reality of Almost All Jensen Polynomial Zeros"
+type: software
+authors:
+  - family-names: "Ono"
+    given-names: "Ken"
+    email: "ken@axiommath.ai"
+abstract: >-
+  Lean 4 formalization of the theorem that, for every number field K, all but
+  O_K(sqrt(d log d)) zeros of its degree-d unshifted Dedekind Jensen polynomial
+  are distinct negative real zeros, together with the Riemann-xi specialization
+  and an expanded manuscript.
+keywords:
+  - "Dedekind zeta function"
+  - "Riemann zeta function"
+  - "Jensen polynomial"
+  - "Lean 4"
+  - "formalized mathematics"
+repository-code: "https://github.com/AxiomMath/riemann-jensen-polynomials"
+url: "https://github.com/AxiomMath/riemann-jensen-polynomials"
+license: "Apache-2.0"
+version: "2.0.0"
+date-released: "2026-10-21"
