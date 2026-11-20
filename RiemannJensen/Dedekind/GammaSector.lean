@@ -1,7 +1,6 @@
 module
 
 public import RiemannJensen.Dedekind.FieldSaddleDefinitions
-public import Mathlib
 
 /-!
 # Sectorial Stirling estimate for the Dedekind Gamma remainder

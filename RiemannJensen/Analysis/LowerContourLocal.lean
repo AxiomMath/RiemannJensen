@@ -75,7 +75,7 @@ lemma sqrt_div_sqrt_mul_rpow {n : ℝ} (hn : 0 < n) :
     Real.sqrt (2 * Real.pi / n) / Real.sqrt (2 * Real.pi) * n ^ (-(1:ℝ)/10) =
       n ^ (-(3:ℝ)/5) := by
   have hpi : 0 < Real.sqrt (2 * Real.pi) := Real.sqrt_pos.mpr (by positivity)
-  rw [Real.sqrt_div (by positivity), div_div_cancel_left' hpi.ne', Real.sqrt_eq_rpow,
+  rw [Real.sqrt_div (by positivity), div_div_cancel_left₀ hpi.ne', Real.sqrt_eq_rpow,
     ← Real.rpow_neg hn.le, ← Real.rpow_add hn]
   norm_num
 

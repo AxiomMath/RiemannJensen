@@ -1,5 +1,8 @@
 module
 
+public import Mathlib.Analysis.Complex.LocallyUniformLimit
+public import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
+public import Mathlib.Analysis.SpecialFunctions.Gamma.Digamma
 public import RiemannJensen.Analysis.StirlingNative
 
 /-!
@@ -301,7 +304,7 @@ lemma hasSum_deriv_stirR {s : ℂ} (hs : s ∈ stirDomain) :
     HasSum (fun j : ℕ => stirDd (s + j)) (deriv stirR s) := by
   have := hasSum_deriv_of_summable_norm (F := fun (j : ℕ) z => stirD (z + j))
     (summable_bound one_pos 68)
-    (fun j z hz => (hasDerivAt_stirD_add hz.1 j).differentiableAt.differentiableWithinAt)
+    (fun j z (hz : z ∈ stirDomain) => (hasDerivAt_stirD_add hz.1 j).differentiableAt.differentiableWithinAt)
     isOpen_stirDomain (fun j z hz => norm_stirD_add_le_stirDomain hz j) hs
   rwa [funext fun j : ℕ => (hasDerivAt_stirD_add hs.1 j).deriv] at this
 

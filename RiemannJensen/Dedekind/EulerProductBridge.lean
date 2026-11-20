@@ -61,7 +61,7 @@ theorem dedekindZeta_eq_LSeries (z : ℂ) :
 
 /-- There are finitely many ideals of `𝓞 K` of a given absolute norm. -/
 scoped instance finite_fiber (n : ℕ) : Finite {I : Ideal (𝓞 K) // Ideal.absNorm I = n} :=
-  (Ideal.finite_setOfPred_absNorm_eq n).to_subtype
+  (Ring.HasFiniteQuotients.finite_absNorm_eq n).to_subtype
 
 /-- There is exactly one ideal of absolute norm `0`, the zero ideal. -/
 @[simp]
@@ -87,7 +87,7 @@ theorem tendsto_sum_idealCount_div :
     show 1 = idealCount K 0 from (idealCount_zero K).symm,
     Finset.sum_Ioc_add_eq_sum_Icc (n.zero_le)]
   simp only [idealCount]
-  rw [← Finset.card_preimage_eq_sum_card_image_eq (fun k _ => Ideal.finite_setOfPred_absNorm_eq k)]
+  rw [← Finset.card_preimage_eq_sum_card_image_eq (fun k _ => Ring.HasFiniteQuotients.finite_absNorm_eq k)]
   simp [Set.coe_eq_subtype]
 
 /-- The number of nonzero ideals of norm at most `n` is `O(n)`. -/

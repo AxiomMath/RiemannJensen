@@ -202,7 +202,7 @@ theorem saddleAngle_mem_Icc (d : ℕ) (q : ℝ) :
   rcases S.eq_empty_or_nonempty with h | ⟨a, ha⟩
   · rw [h, Real.sInf_empty]
     exact ⟨le_rfl, by positivity⟩
-  · exact ⟨le_csInf ⟨a, ha⟩ (fun b hb => hb.1), (csInf_le ⟨0, fun b hb => hb.1⟩ ha).trans ha.2.1⟩
+  · exact ⟨le_csInf ⟨a, ha⟩ (fun b hb => hb.1), (csInf_le ⟨0, fun b (hb : b ∈ S) => hb.1⟩ ha).trans ha.2.1⟩
 
 /-- The Dedekind gamma scale `a_K` is positive. -/
 theorem dedekindScaleA_pos : 0 < dedekindScaleA K := by

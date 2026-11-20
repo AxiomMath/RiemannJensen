@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Calculus.SmoothSeries
+public import Mathlib.Analysis.PSeriesComplex
+public import Mathlib.Analysis.Real.Pi.Bounds
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+public import Mathlib.NumberTheory.LSeries.RiemannZeta
 
 /-!
 # The whole-line theta kernel `Φ` and the Riemann `ξ`-function

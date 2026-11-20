@@ -5,6 +5,7 @@ public import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
 public import Mathlib.Topology.Algebra.InfiniteSum.TsumUniformlyOn
 public import Mathlib.NumberTheory.RamificationInertia.Inertia
 public import Mathlib.NumberTheory.RamificationInertia.Ramification
+public import Mathlib.RingTheory.Ideal.Int
 
 /-!
 # Bounds for the Dedekind Euler logarithm

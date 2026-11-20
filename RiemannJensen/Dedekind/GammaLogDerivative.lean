@@ -2,6 +2,7 @@ module
 
 public import RiemannJensen.Dedekind.GammaLogSector
 public import Mathlib.Analysis.Complex.Liouville
+public import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
 public import Mathlib.Analysis.SpecialFunctions.Gamma.Deriv
 public import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 

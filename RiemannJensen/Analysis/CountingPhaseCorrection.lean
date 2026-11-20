@@ -95,7 +95,7 @@ theorem continuousOn_phaseCorrection_countingWindow
   have hsub : countingWindow M c₀ d ⊆ Set.Ioc (edgeQ d) (scaleT d) :=
     fun q hq => (countingWindow_subset_scale_window d hd hM hcsmall hq).1
   have hα : ContinuousOn (saddleAngle d) (countingWindow M c₀ d) :=
-    ((continuousOn_saddleAngle_on_branch d hd1).mono fun _ hq =>
+    ((continuousOn_saddleAngle_on_branch d hd1).mono fun _ (hq : _ ∈ Set.Ioc (edgeQ d) (scaleT d)) =>
       ⟨hq.1.le, (hq.2.trans_lt (scaleT_lt_saddleQ_pi_div_two d hd1)).le⟩).mono hsub
   have hw : ContinuousOn (saddlePhasePoint d) (countingWindow M c₀ d) :=
     continuousOn_saddlePhasePoint d hd1 hα fun q hq => by

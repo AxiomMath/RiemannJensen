@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.MeasureTheory.Integral.Pi
 public import RiemannJensen.Dedekind.CompletedZetaHeckeKernel
 
 /-!
@@ -633,7 +634,7 @@ theorem gapsw80_t8_mk0_orbitToIdeal (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ)
       = FractionalIdeal.spanSingleton (𝓞 K)⁰ (x : K) from by
     rw [Units.val_mul, FractionalIdeal.coe_mk0, gapsw80_t8_coe_orbitToIdeal,
       mul_assoc, I.inv_mul, mul_one],
-    FractionalIdeal.coe_spanSingleton]
+    FractionalIdeal.coeToSubmodule_spanSingleton]
 
 /-- For nonzero `x` in `I`, the product of `Ideal.absNorm (gapsw80_t8_orbitToIdeal K I x)` and
 `FractionalIdeal.absNorm I` is `|Algebra.norm ℚ x|`. -/
@@ -876,15 +877,18 @@ theorem gapsw80_t8_summable_rexpQ (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ)
       cexp ((-(π * ∑ w, y w * (w (a : K)) ^ 2) : ℝ) : ℂ) :=
     (Equiv.summable_iff ((gapsw80_t8_zEquivNonzero K I).trans
         (gapsw80_t8_nonzeroIdealLatticeEquiv K I).symm)).mp
-      (((gapsw80_t8_summable_thetaTerm K I hy).subtype {v | v ≠ 0}).congr fun a => by
+      (((gapsw80_t8_summable_thetaTerm K I hy).comp_injective
+          (Subtype.val_injective (p := fun v : Fin (nK K) → ℤ => v ≠ 0))).congr
+          fun (a : {v : Fin (nK K) → ℤ // v ≠ 0}) => by
         simp only [Function.comp_apply]
         have hcoe : ((zEquiv K I) a.1 : mixedSpace K)
             = mixedEmbedding K
                 ((((gapsw80_t8_zEquivNonzero K I).trans
                     (gapsw80_t8_nonzeroIdealLatticeEquiv K I).symm) a :
-                  gapsw80_t8_nonzeroIdeal K I) : K) :=
-          (((mem_idealLattice K I).mp
-            ((gapsw80_t8_zEquivNonzero K I) a).1.2).choose_spec.2).symm
+                  gapsw80_t8_nonzeroIdeal K I) : K) := by
+          have hch := ((mem_idealLattice K I).mp
+            ((gapsw80_t8_zEquivNonzero K I) a).1.2).choose_spec.2
+          exact hch.symm
         congr 4
         exact (gapsw80_t4_quadForm_scaledGram K I y a.1).trans
           (Finset.sum_congr rfl fun w _ => by rw [hcoe, normAtPlace_apply]))
@@ -950,7 +954,7 @@ theorem gapsw80_t8_placeParam_add_single {t : ℝ} (ht : 0 < t) (u : logSpace K)
     (i : {w : InfinitePlace K // w ≠ w₀}) (w : InfinitePlace K) :
     gapsw80_t8_placeParam K (t, u + Pi.single i 1) w
       = gapsw80_t8_placeParam K (t, u) w
-        * gapsw80_t5_unitSqScale K (fundSystem K (equivFinRank.symm i)) w := by
+        * gapsw80_t5_unitSqScale K (fundSystem K ((NumberField.Units.equivFinRank K).symm i)) w := by
   have key : ∀ v, gapsw80_t8_placeParam K (t, v) w
       = gapsw80_t5_yParam K (gapsw80_t5_mkParam K (Real.log t / 2) v) w := fun v => by
     rw [gapsw80_t7_yParam_mkParam_factor K ht v w]; rfl
@@ -982,7 +986,7 @@ theorem gapsw80_t8_quadForm_shift_single_c (I : (FractionalIdeal (𝓞 K)⁰ K)�
         c w * gapsw80_t8_placeParam K (t, u + Pi.single i 1) w * (w (a : K)) ^ 2
       = ∑ w : InfinitePlace K,
           c w * gapsw80_t8_placeParam K (t, u) w
-            * (w (((fundSystem K (equivFinRank.symm i)) • a : gapsw80_t8_nonzeroIdeal K I) : K)) ^ 2 := by
+            * (w (((fundSystem K ((NumberField.Units.equivFinRank K).symm i)) • a : gapsw80_t8_nonzeroIdeal K I) : K)) ^ 2 := by
   rw [gapsw80_t8_quadForm_unit_smul_c]
   exact Finset.sum_congr rfl fun w _ => by rw [gapsw80_t8_placeParam_add_single K ht]; ring
 
@@ -1120,7 +1124,7 @@ theorem gapsw80_t8_quadForm_shift_span_c (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ)
         c w * gapsw80_t8_placeParam K (t, u + (g : logSpace K)) w * (w (a : K)) ^ 2
       = ∑ w : InfinitePlace K,
           c w * gapsw80_t8_placeParam K (t, u) w
-            * (w (((∏ i, fundSystem K (equivFinRank.symm i) ^ (gapsw80_t8_spanEquiv K g i))
+            * (w (((∏ i, fundSystem K ((NumberField.Units.equivFinRank K).symm i) ^ (gapsw80_t8_spanEquiv K g i))
                 • a : gapsw80_t8_nonzeroIdeal K I) : K)) ^ 2 := by
   set m := gapsw80_t8_spanEquiv K g with hm_def
   have hg : (g : logSpace K) = ∑ i, (m i : ℝ) • Pi.single i (1:ℝ) := by
@@ -1135,7 +1139,7 @@ theorem gapsw80_t8_quadForm_shift_span_c (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ)
       ∀ (b : gapsw80_t8_nonzeroIdeal K I),
       ∑ w, c w * gapsw80_t8_placeParam K (t, v + (k : ℝ) • Pi.single i 1) w * (w (b : K)) ^ 2
         = ∑ w, c w * gapsw80_t8_placeParam K (t, v) w
-            * (w (((fundSystem K (equivFinRank.symm i) ^ k) • b : gapsw80_t8_nonzeroIdeal K I)
+            * (w (((fundSystem K ((NumberField.Units.equivFinRank K).symm i) ^ k) • b : gapsw80_t8_nonzeroIdeal K I)
                 : K)) ^ 2 := by
     intro v i k
     induction k using Int.induction_on with
@@ -1146,25 +1150,25 @@ theorem gapsw80_t8_quadForm_shift_span_c (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ)
               = ((n:ℤ):ℝ) • Pi.single i 1 + Pi.single i 1 from by
             push_cast; rw [add_smul, one_smul],
         ← add_assoc, gapsw80_t8_quadForm_shift_single_c K I c ht,
-        ih (fundSystem K (equivFinRank.symm i) • b), ← mul_smul, ← _root_.zpow_add_one,
+        ih (fundSystem K ((NumberField.Units.equivFinRank K).symm i) • b), ← mul_smul, ← _root_.zpow_add_one,
         show ((n:ℤ)+1 : ℤ) = (((n:ℕ)+1:ℕ):ℤ) from by push_cast; ring]
     | pred n ih =>
       intro b
       have key := (gapsw80_t8_quadForm_shift_single_c K I c ht
         (v + ((-(n:ℤ)-1:ℤ):ℝ) • Pi.single i 1) i
-        ((fundSystem K (equivFinRank.symm i))⁻¹ • b)).symm
+        ((fundSystem K ((NumberField.Units.equivFinRank K).symm i))⁻¹ • b)).symm
       rw [← mul_smul, mul_inv_cancel, one_smul, add_assoc,
         show ((-(n:ℤ)-1:ℤ):ℝ) • Pi.single i (1:ℝ) + Pi.single i 1
             = ((-(n:ℤ):ℤ):ℝ) • Pi.single i 1 from by
           rw [Int.cast_sub, Int.cast_one, sub_smul, one_smul, sub_add_cancel]] at key
-      rw [key, ih ((fundSystem K (equivFinRank.symm i))⁻¹ • b), ← mul_smul,
-        show fundSystem K (equivFinRank.symm i) ^ (-(n:ℤ)) * (fundSystem K (equivFinRank.symm i))⁻¹
-            = fundSystem K (equivFinRank.symm i) ^ (-(n:ℤ)-1) from by group]
+      rw [key, ih ((fundSystem K ((NumberField.Units.equivFinRank K).symm i))⁻¹ • b), ← mul_smul,
+        show fundSystem K ((NumberField.Units.equivFinRank K).symm i) ^ (-(n:ℤ)) * (fundSystem K ((NumberField.Units.equivFinRank K).symm i))⁻¹
+            = fundSystem K ((NumberField.Units.equivFinRank K).symm i) ^ (-(n:ℤ)-1) from by group]
   suffices ∀ (s : Finset {w : InfinitePlace K // w ≠ w₀}) (a' : gapsw80_t8_nonzeroIdeal K I),
       ∑ w, c w * gapsw80_t8_placeParam K (t, u + ∑ i ∈ s, (m i : ℝ) • Pi.single i 1) w
           * (w (a' : K)) ^ 2
         = ∑ w, c w * gapsw80_t8_placeParam K (t, u) w
-            * (w (((∏ i ∈ s, fundSystem K (equivFinRank.symm i) ^ (m i)) • a'
+            * (w (((∏ i ∈ s, fundSystem K ((NumberField.Units.equivFinRank K).symm i) ^ (m i)) • a'
                 : gapsw80_t8_nonzeroIdeal K I) : K)) ^ 2 from this Finset.univ a
   intro s
   induction s using Finset.induction with
@@ -1173,7 +1177,7 @@ theorem gapsw80_t8_quadForm_shift_span_c (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ)
     intro a'
     rw [Finset.sum_insert hj, add_comm ((m j : ℝ) • Pi.single j 1), ← add_assoc,
       hstep (u + ∑ i ∈ s, (m i : ℝ) • Pi.single i 1) j (m j) a',
-      ih ((fundSystem K (equivFinRank.symm j) ^ (m j)) • a'),
+      ih ((fundSystem K ((NumberField.Units.equivFinRank K).symm j) ^ (m j)) • a'),
       Finset.prod_insert hj, mul_smul, smul_comm]
 
 /-- For `t > 0`, `u` and `g` in the `ℤ`-span of the standard basis,
@@ -1188,7 +1192,7 @@ theorem gapsw80_t8_quadForm_shift_span (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ)
         gapsw80_t8_placeParam K (t, u + (g : logSpace K)) w * (w (a : K)) ^ 2
       = ∑ w : InfinitePlace K,
           gapsw80_t8_placeParam K (t, u) w
-            * (w (((∏ i, fundSystem K (equivFinRank.symm i) ^ (gapsw80_t8_spanEquiv K g i))
+            * (w (((∏ i, fundSystem K ((NumberField.Units.equivFinRank K).symm i) ^ (gapsw80_t8_spanEquiv K g i))
                 • a : gapsw80_t8_nonzeroIdeal K I) : K)) ^ 2 := by
   simpa only [Pi.one_apply, one_mul] using gapsw80_t8_quadForm_shift_span_c K I 1 ht u g a
 
@@ -1279,7 +1283,7 @@ theorem gapsw80_t8_lintegral_master_reindex (I : (FractionalIdeal (𝓞 K)⁰ K)
 
   rw [← (gapsw80_t8_orbitSigmaEquiv K I).tsum_eq fun a =>
       ∫⁻ p in (Set.Ioi (0:ℝ)) ×ˢ (gapsw80_t7_unitBox K), GE a p,
-    ENNReal.tsum_sigma']
+    tsum_sigma']
   refine (tsum_congr fun ω => ?_).trans ENNReal.tsum_mul_left
 
   have hstep6a : ∀ p' : torsion K × (Fin (rank K) → ℤ), ∀ p : ℝ × logSpace K,
@@ -1294,7 +1298,7 @@ theorem gapsw80_t8_lintegral_master_reindex (I : (FractionalIdeal (𝓞 K)⁰ K)
   rw [← (gapsw80_t8_dutEquiv K).tsum_eq,
     tsum_congr fun p' => lintegral_congr fun p => hstep6a p' p]
 
-  rw [ENNReal.tsum_prod']
+  rw [tsum_prod']
   simp only
   rw [ENNReal.tsum_const,
     show (ENat.card (torsion K) : ENNReal) = (torsionOrder K : ENNReal) from by
@@ -1304,15 +1308,15 @@ theorem gapsw80_t8_lintegral_master_reindex (I : (FractionalIdeal (𝓞 K)⁰ K)
   set efr : (Fin (rank K) → ℤ) ≃
       Submodule.span ℤ (Set.range (Pi.basisFun ℝ {w : InfinitePlace K // w ≠ w₀})) :=
     (Equiv.arrowCongr
-        (equivFinRank : Fin (rank K) ≃ {w : InfinitePlace K // w ≠ w₀}) (Equiv.refl ℤ)).trans
+        (NumberField.Units.equivFinRank K : Fin (rank K) ≃ {w : InfinitePlace K // w ≠ w₀}) (Equiv.refl ℤ)).trans
       (gapsw80_t8_spanEquiv K).symm with hefr_def
   have hefr_prod : ∀ g,
       (∏ j, fundSystem K j ^ efr.symm g j)
-        = ∏ i, fundSystem K (equivFinRank.symm i) ^ gapsw80_t8_spanEquiv K g i := fun g => by
-    have hefrs : ∀ j, efr.symm g j = gapsw80_t8_spanEquiv K g (equivFinRank j) := fun j => by
+        = ∏ i, fundSystem K ((NumberField.Units.equivFinRank K).symm i) ^ gapsw80_t8_spanEquiv K g i := fun g => by
+    have hefrs : ∀ j, efr.symm g j = gapsw80_t8_spanEquiv K g (NumberField.Units.equivFinRank K j) := fun j => by
       simp only [hefr_def, Equiv.symm_trans_apply, Equiv.symm_symm, Equiv.arrowCongr_symm,
         Equiv.refl_symm, Equiv.arrowCongr_apply, Equiv.coe_refl, Function.comp_apply, id_eq]
-    exact Fintype.prod_equiv (equivFinRank : Fin (rank K) ≃ {w : InfinitePlace K // w ≠ w₀}) _ _
+    exact Fintype.prod_equiv (NumberField.Units.equivFinRank K : Fin (rank K) ≃ {w : InfinitePlace K // w ≠ w₀}) _ _
       fun j => by rw [hefrs j, Equiv.symm_apply_apply]
   rw [← efr.symm.tsum_eq,
     tsum_congr fun g => by rw [hefr_prod g]]
@@ -1494,12 +1498,12 @@ theorem gapsw80_t8_integrableOn_orbitRepr (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ
             simp only [Function.comp_apply, Complex.ofReal_re]; exact hp.1))
         ).continuousWithinAt
   refine ⟨hcont.aestronglyMeasurable (measurableSet_Ioi.prod MeasurableSet.univ), ?_⟩
-  rw [hasFiniteIntegral_iff_enorm,
+  rw [hasFiniteIntegral_iff_eNorm,
     setLIntegral_congr_fun (measurableSet_Ioi.prod MeasurableSet.univ)
       fun p hp => gapsw80_t8_enorm_integrand_eq K σ (gapsw80_t8_orbitRepr K I ω) (p := p) hp.1]
   refine lt_of_le_of_lt ?_ (lt_top_iff_ne_top.mpr (gapsw80_t8_master_finite K I hσ))
   rw [gapsw80_t8_lintegral_master_reindex K I σ.re]
-  exact le_trans (ENNReal.le_tsum (f := fun ω' => ∫⁻ p in Set.Ioi (0:ℝ) ×ˢ Set.univ,
+  exact le_trans (le_tsum (f := fun ω' => ∫⁻ p in Set.Ioi (0:ℝ) ×ˢ Set.univ,
       ENNReal.ofReal (Real.exp (-(π * ∑ w, gapsw80_t8_placeParam K p w
         * w (gapsw80_t8_orbitRepr K I ω') ^ 2)) * p.1 ^ (σ.re - 1))) ω)
     (le_mul_of_one_le_left' (by exact_mod_cast torsionOrder_pos K))
@@ -1559,10 +1563,10 @@ theorem gapsw80_t8_rankinSelberg_unfold_c (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ
   have hFsum_int : IntegrableOn (fun p => ∑' a, F a p)
       ((Set.Ioi (0:ℝ)) ×ˢ (gapsw80_t7_unitBox K)) volume := by
     refine ⟨AEStronglyMeasurable.tsum hF_sm, ?_⟩
-    rw [hasFiniteIntegral_iff_enorm]
+    rw [hasFiniteIntegral_iff_eNorm]
     refine lt_of_le_of_lt ?_ (lt_top_iff_ne_top.mpr hMaster')
-    rw [← lintegral_tsum fun a => (hF_sm a).enorm]
-    exact lintegral_mono fun p => enorm_tsum_le_tsum_enorm
+    rw [← lintegral_tsum fun a => (hF_sm a).eNorm]
+    exact lintegral_mono fun p => eNorm_tsum_le_tsum_eNorm
   rw [show (∫ t in Set.Ioi (0:ℝ), (t : ℂ) ^ (σ - 1)
           * ∫ u in gapsw80_t7_unitBox K,
               (∑' a : gapsw80_t8_nonzeroIdeal K I,
@@ -1581,9 +1585,9 @@ theorem gapsw80_t8_rankinSelberg_unfold_c (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ
     refine .of_norm (.of_nonneg_of_le (fun _ => norm_nonneg _) (fun a => ?_)
       (ENNReal.summable_toReal hMaster'))
     rw [← ENNReal.toReal_ofReal (norm_nonneg _), ofReal_norm]
-    exact ENNReal.toReal_mono (ne_top_of_le_ne_top hMaster' (ENNReal.le_tsum
+    exact ENNReal.toReal_mono (ne_top_of_le_ne_top hMaster' (le_tsum
       (f := fun a => ∫⁻ p in Set.Ioi (0:ℝ) ×ˢ gapsw80_t7_unitBox K, ‖F a p‖ₑ) a))
-      (enorm_integral_le_lintegral_enorm _)
+      (eNorm_integral_le_lintegral_eNorm _)
   have hF_Q : ∀ (a b : gapsw80_t8_nonzeroIdeal K I) (p : ℝ × logSpace K),
       (∑ w, c w * gapsw80_t8_placeParam K p w * (w (a : K)) ^ 2)
         = ∑ w, c w * gapsw80_t8_placeParam K p w * (w (b : K)) ^ 2 →
@@ -1627,12 +1631,12 @@ theorem gapsw80_t8_rankinSelberg_unfold_c (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ
   set efr : (Fin (rank K) → ℤ) ≃
       Submodule.span ℤ (Set.range (Pi.basisFun ℝ {w : InfinitePlace K // w ≠ w₀})) :=
     (Equiv.arrowCongr
-        (equivFinRank : Fin (rank K) ≃ {w : InfinitePlace K // w ≠ w₀}) (Equiv.refl ℤ)).trans
+        (NumberField.Units.equivFinRank K : Fin (rank K) ≃ {w : InfinitePlace K // w ≠ w₀}) (Equiv.refl ℤ)).trans
       (gapsw80_t8_spanEquiv K).symm with hefr_def
   rw [← efr.symm.tsum_eq,
     tsum_congr fun g => by rw [show (∏ j, fundSystem K j ^ efr.symm g j)
-        = (∏ i, fundSystem K (equivFinRank.symm i) ^ gapsw80_t8_spanEquiv K g i) from
-      Fintype.prod_equiv (equivFinRank : Fin (rank K) ≃ {w : InfinitePlace K // w ≠ w₀}) _ _
+        = (∏ i, fundSystem K ((NumberField.Units.equivFinRank K).symm i) ^ gapsw80_t8_spanEquiv K g i) from
+      Fintype.prod_equiv (NumberField.Units.equivFinRank K : Fin (rank K) ≃ {w : InfinitePlace K // w ≠ w₀}) _ _
         fun j => by
           simp only [hefr_def, Equiv.symm_trans_apply, Equiv.symm_symm, Equiv.arrowCongr_symm,
             Equiv.refl_symm, Equiv.arrowCongr_apply, Equiv.coe_refl, Function.comp_apply,
@@ -1642,8 +1646,8 @@ theorem gapsw80_t8_rankinSelberg_unfold_c (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ
       ((Set.Ioi (0:ℝ)) ×ˢ (Set.univ : Set (logSpace K))) volume := hIntω ω
   have hInt_box : ∀ b : gapsw80_t8_nonzeroIdeal K I,
       IntegrableOn (F b) ((Set.Ioi (0:ℝ)) ×ˢ (gapsw80_t7_unitBox K)) volume := fun b =>
-    ⟨hF_sm b, hasFiniteIntegral_iff_enorm.mpr
-      (lt_of_le_of_lt (ENNReal.le_tsum
+    ⟨hF_sm b, hasFiniteIntegral_iff_eNorm.mpr
+      (lt_of_le_of_lt (le_tsum
         (f := fun a => ∫⁻ p in Set.Ioi (0:ℝ) ×ˢ gapsw80_t7_unitBox K, ‖F a p‖ₑ) b)
         (lt_top_iff_ne_top.mpr hMaster'))⟩
   set ν : Measure (ℝ × logSpace K) :=
@@ -2031,7 +2035,7 @@ theorem gapsw80_t8_master_finite_mult (J : (FractionalIdeal (𝓞 K)⁰ K)ˣ)
                 * (w (a : K)) ^ 2))
               * p.1 ^ (σ.re - 1))) ≠ ⊤ := by
   refine ne_top_of_le_ne_top (gapsw80_t8_master_finite K J hσ) ?_
-  refine ENNReal.tsum_le_tsum fun a => ?_
+  refine tsum_le_tsum fun a => ?_
   refine lintegral_mono_ae ?_
   filter_upwards [ae_restrict_mem
     (measurableSet_Ioi.prod (MeasurableSet.univ_pi fun _ => measurableSet_Ico))] with p hp
@@ -2061,9 +2065,9 @@ theorem gapsw80_t8_integrableOn_orbitRepr_mult (J : (FractionalIdeal (𝓞 K)⁰
             simp only [Function.comp_apply, Complex.ofReal_re]; exact hp.1))
         ).continuousWithinAt
   refine ⟨hcont.aestronglyMeasurable (measurableSet_Ioi.prod MeasurableSet.univ), ?_⟩
-  rw [hasFiniteIntegral_iff_enorm]
+  rw [hasFiniteIntegral_iff_eNorm]
   have hbound := (gapsw80_t8_integrableOn_orbitRepr K J hσ ω).2
-  rw [hasFiniteIntegral_iff_enorm] at hbound
+  rw [hasFiniteIntegral_iff_eNorm] at hbound
   refine lt_of_le_of_lt ?_ hbound
   refine lintegral_mono_ae ?_
   filter_upwards [ae_restrict_mem (measurableSet_Ioi.prod MeasurableSet.univ)] with p hp

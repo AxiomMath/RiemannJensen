@@ -1,6 +1,14 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Algebra.Field
+public import Mathlib.Algebra.Order.Star.Int
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.PSeriesComplex
+public import Mathlib.MeasureTheory.Function.Floor
+public import Mathlib.NumberTheory.AbelSummation
+public import Mathlib.NumberTheory.LSeries.RiemannZeta
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.Separation.CompletelyRegular
 
 /-!
 # The first-order Euler–Maclaurin formula and the continuation of `ζ`
@@ -260,7 +268,7 @@ lemma ZetaSum_aux1 {a b : ℕ} {s : ℂ} (s_ne_one : s ≠ 1) (s_ne_zero : s ≠
   · rw [Nat.floor_natCast, Nat.floor_natCast, ← intervalIntegral.integral_const_mul]
     simp_rw [mul_div, ← mul_div, φ, ZetaSum_aux1₁ s_ne_one ha]
     conv => rhs; rw [sub_eq_add_neg]
-    congr; any_goals norm_cast; simp only [one_div, add_sub_cancel_left]
+    congr; all_goals norm_cast; simp only [one_div, add_sub_cancel_left]
     rw [← intervalIntegral.integral_neg, intervalIntegral.integral_congr]
     simp only [φ, one_div] at φderiv
     intro x hx; simp_rw [φderiv x hx, φ']; ring_nf
@@ -487,7 +495,7 @@ lemma ZetaBnd_aux1p (N : ℕ) (Npos : 1 ≤ N) {σ : ℝ} (hσ : σ ∈ Ioc 0 2)
     (fun (t : ℝ) ↦
       ‖(σ + t * I) * ∫ x in Ioi (N : ℝ), (⌊x⌋ + 1 / 2 - x) / (x : ℂ) ^ ((σ + t * I) + 1)‖)
     =O[Filter.principal {t | 2 ≤ |t|}] fun t ↦ |t| * N ^ (-σ) / σ := by
-  rw [Asymptotics.IsBigO_def]
+  rw [Asymptotics.isBigO_iff_isBigOWith]
   use 2
   rw [Asymptotics.isBigOWith_principal]
   intro t ht

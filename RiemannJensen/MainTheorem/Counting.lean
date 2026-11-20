@@ -52,7 +52,7 @@ theorem le_negativeJensenRootCount_of_injective
     (hz_root : ∀ i, (jensenPolynomial d).eval (z i) = 0) :
     n ≤ negativeJensenRootCount d :=
   le_negativeDistinctRootCount_of_injective
-    (fun hp => hgamma (by simpa [coeff_jensenPolynomial_self] using congrArg (coeff · d) hp))
+    (fun hp => hgamma (by simpa [coeff_jensenPolynomial_self] using congrArg (·.coeff d) hp))
     z hz_inj hz_neg hz_root
 
 /-- For `0 < A` and `0 < q`, the quotient `-A / q` is negative. -/

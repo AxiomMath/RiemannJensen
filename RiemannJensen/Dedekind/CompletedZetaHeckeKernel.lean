@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.NumberTheory.LSeries.AbstractFuncEq
+public import Mathlib.NumberTheory.NumberField.Discriminant.Different
 public import RiemannJensen.Dedekind.CompletedZetaIdealTheta
 
 /-!
@@ -130,15 +132,15 @@ equals `expMapBasis c w` times the absolute value at `w` of the corresponding fu
 theorem expMapBasis_add_single {i : InfinitePlace K} (hi : i ≠ w₀) (c : realSpace K)
     (w : InfinitePlace K) :
     expMapBasis (c + Pi.single i 1) w
-      = expMapBasis c w * w (fundSystem K (equivFinRank.symm ⟨i, hi⟩) : K) := by
+      = expMapBasis c w * w (fundSystem K ((NumberField.Units.equivFinRank K).symm ⟨i, hi⟩) : K) := by
 
   rw [expMapBasis_apply, expMapBasis_apply, map_add, expMap_add, Pi.mul_apply,
     show ((completeBasis K).equivFun.symm) (Pi.single i 1) = completeBasis K i by
       simp [Basis.equivFun_symm_apply, Pi.single_apply],
     completeBasis_apply_of_ne K ⟨i, hi⟩,
     show expMap (expMap.symm
-        (normAtAllPlaces (mixedEmbedding K (fundSystem K (equivFinRank.symm ⟨i, hi⟩))))) w
-      = normAtAllPlaces (mixedEmbedding K (fundSystem K (equivFinRank.symm ⟨i, hi⟩))) w from
+        (normAtAllPlaces (mixedEmbedding K (fundSystem K ((NumberField.Units.equivFinRank K).symm ⟨i, hi⟩))))) w
+      = normAtAllPlaces (mixedEmbedding K (fundSystem K ((NumberField.Units.equivFinRank K).symm ⟨i, hi⟩))) w from
       congrFun (expMap.right_inv (by simp [expMap_target, pos_at_place])) w,
     normAtAllPlaces_apply, normAtPlace_apply]
 
@@ -147,7 +149,7 @@ equals `gapsw80_t5_unitSqScale` of the corresponding fundamental unit times
 `gapsw80_t5_yParam K c`. -/
 theorem gapsw80_t5_yParam_add_single {i : InfinitePlace K} (hi : i ≠ w₀) (c : realSpace K) :
     gapsw80_t5_yParam K (c + Pi.single i 1)
-      = gapsw80_t5_unitSqScale K (fundSystem K (equivFinRank.symm ⟨i, hi⟩))
+      = gapsw80_t5_unitSqScale K (fundSystem K ((NumberField.Units.equivFinRank K).symm ⟨i, hi⟩))
           * gapsw80_t5_yParam K c := by
   ext w
   unfold gapsw80_t5_yParam gapsw80_t5_unitSqScale
@@ -1057,7 +1059,7 @@ theorem gapsw80_t7_h_feq (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ) :
 product over `i` of `w (fundSystem K (equivFinRank.symm i)) ^ (u i)`. -/
 def gapsw80_t7_unitPart (u : logSpace K) : realSpace K := fun w =>
   (∏ i : {w : InfinitePlace K // w ≠ w₀},
-    (w (fundSystem K (equivFinRank.symm i) : K)) ^ (u i)) ^ 2
+    (w (fundSystem K ((NumberField.Units.equivFinRank K).symm i) : K)) ^ (u i)) ^ 2
 
 /-- Every coordinate of `gapsw80_t7_unitPart K u` is strictly positive. -/
 theorem unitPart_pos (u : logSpace K) (w : InfinitePlace K) :

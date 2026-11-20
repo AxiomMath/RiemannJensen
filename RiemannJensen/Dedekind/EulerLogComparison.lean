@@ -2,6 +2,7 @@ module
 
 public import RiemannJensen.Dedekind.EulerLogBounds
 public import RiemannJensen.Dedekind.PrimesOverCard
+public import Mathlib.Analysis.SpecialFunctions.Log.Summable
 public import Mathlib.NumberTheory.EulerProduct.DirichletLSeries
 
 /-!

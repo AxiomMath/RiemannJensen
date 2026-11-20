@@ -1,6 +1,13 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Order.Archimedean.Real.Hom
+public import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Matrix.PosDef
+public import Mathlib.Analysis.SpecialFunctions.Gamma.Deligne
+public import Mathlib.Analysis.SpecialFunctions.Gaussian.PoissonSummation
+public import Mathlib.NumberTheory.NumberField.DedekindZeta
+public import Mathlib.RingTheory.PiTensorProduct
+public import Mathlib.Topology.Separation.CompletelyRegular
 public import RiemannJensen.Dedekind.P2MUtil
 
 /-!

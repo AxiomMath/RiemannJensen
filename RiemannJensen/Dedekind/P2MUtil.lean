@@ -126,11 +126,15 @@ elab "p2m_reactivate " s:str : command => do
     let ns := w.toName
     for ext in (← scopedEnvExtensionsRef.get) do
       modifyEnv fun env =>
-        let st := ext.ext.getState env
-        match st.stateStack with
-        | top :: stack =>
-          let top := { top with activeScopes := top.activeScopes.erase ns }
-          ext.activateScoped (ext.ext.setState env { st with stateStack := top :: stack }) ns
-        | _ => env
+        -- Forget that `ns` is active, so that `activateScoped` adds its entries again.
+        -- Unlogged and without a generation bump: this changes only the `activeScopes`
+        -- bookkeeping, not the state in effect; `activateScoped` then logs the entries it adds.
+        let env := ext.ext.modifyState (asyncMode := .local) (bumpGen := false) (log := .unlogged)
+          env fun st =>
+            match st.stateStack with
+            | top :: stack =>
+              { st with stateStack := { top with activeScopes := top.activeScopes.erase ns } :: stack }
+            | [] => st
+        ext.activateScoped env ns
 
 macro "p2m_open_scoped " s:str " in " c:command : command => `(section p2m_open_scoped $s $c end)

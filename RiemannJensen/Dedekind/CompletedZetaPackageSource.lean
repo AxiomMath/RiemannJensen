@@ -1,5 +1,9 @@
 module
 
+public import Mathlib.Algebra.BigOperators.Ring.Nat
+public import Mathlib.Analysis.Complex.ExponentialBounds
+public import Mathlib.Analysis.Normed.Module.Connected
+public import Mathlib.Analysis.SpecialFunctions.Stirling
 public import RiemannJensen.Dedekind.CompletedZetaPartialZeta
 
 /-!
@@ -395,7 +399,7 @@ noncomputable def gapsw80_t10_fiberEquiv {n : ℕ} (hn : n ≠ 0) :
 scoped instance gapsw80_t10_fiberFinite (n : ℕ) :
     Finite {J : (Ideal (𝓞 K))⁰ // Ideal.absNorm (J : Ideal (𝓞 K)) = n} := by
   have : Finite {I : Ideal (𝓞 K) // absNorm I = n} :=
-    (Ideal.finite_setOfPred_absNorm_eq n).to_subtype
+    (Ring.HasFiniteQuotients.finite_absNorm_eq n).to_subtype
   exact Finite.of_injective
     (fun J => (⟨J.1.1, J.2⟩ : {I : Ideal (𝓞 K) // absNorm I = n}))
     (fun J₁ J₂ h => Subtype.ext (Subtype.ext (by
@@ -422,7 +426,7 @@ theorem gapsw80_t10_LSeriesSummable_dedekindZeta {s : ℂ} (hs : 1 < s.re) :
           simp [Ideal.absNorm_eq_zero_iff],
         Finset.sum_Ioc_add_eq_sum_Icc (n.zero_le),
         ← Finset.card_preimage_eq_sum_card_image_eq
-          (fun k _ ↦ Ideal.finite_setOfPred_absNorm_eq k)]
+          (fun k _ ↦ Ring.HasFiniteQuotients.finite_absNorm_eq k)]
       simp [Set.coe_eq_subtype]
   exact (LSeriesSummable_congr s (fun {n} _ => by push_cast; ring)).mp key
 
@@ -435,6 +439,7 @@ theorem gapsw80_t10_term_eq (s : ℂ) (n : ℕ) :
   rcases eq_or_ne n 0 with rfl | hn
   · have hE : IsEmpty {J : (Ideal (𝓞 K))⁰ // absNorm (J : Ideal (𝓞 K)) = 0} :=
       ⟨fun J => (Ideal.absNorm_ne_zero_of_nonZeroDivisors J.1) J.2⟩
+    rw [@Nat.card_of_isEmpty _ hE]
     simp [LSeries.term_zero]
   · rw [LSeries.term_of_ne_zero hn, Nat.card_congr (gapsw80_t10_fiberEquiv K hn),
       div_eq_mul_inv, ← Complex.cpow_neg]
